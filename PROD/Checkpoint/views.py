@@ -5,8 +5,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Attendance, Meetings
 
-from .forms import TaskForm, UploadForm
-from .models import Task, Uploads
+from .forms import TaskForm, UploadForm, DeadlineForm
+from .models import Task, Uploads, Deadline
 
 
 def dashboard(request):
@@ -62,3 +62,20 @@ def create_task(request):
     return render(request, 'create_task.html', {'task_form': task_form, 'upload_form': upload_form})
 
 
+@login_required
+def create_deadline(request):
+    if request.method == 'POST':
+        form = DeadlineForm(request.POST)
+        if form.is_valid():
+            deadline = form.save(commit=False)
+            deadline.created_by = request.user
+            deadline.save()
+            return redirect('deadline_list')  # Change this to the name of your deadline list view
+    else:
+        form = DeadlineForm()
+    return render(request, 'create_deadline.html', {'form': form})
+
+@login_required
+def deadline_list(request):
+    deadlines = Deadline.objects.all()
+    return render(request, 'deadline_list.html', {'deadlines': deadlines})
