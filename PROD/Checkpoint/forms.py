@@ -1,7 +1,7 @@
 # forms.py
 
 from django import forms
-from .models import Task, Uploads, Deadline
+from .models import Task, Uploads, Deadline, PhysMeeting
 
 class UploadForm(forms.ModelForm):
     class Meta:
@@ -18,3 +18,9 @@ class DeadlineForm(forms.ModelForm):
     class Meta:
         model = Deadline
         fields = ['title', 'description', 'due_date']
+        
+
+class PhysMeetingForm(forms.ModelForm):
+    class Meta:
+        model = PhysMeeting
+        fields = ['title', 'date', 'time', 'description']

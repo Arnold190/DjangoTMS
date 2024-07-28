@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 import uuid
+from datetime import timedelta
+
 # Create your models here.
 
 def generate_user_id(prefix):
@@ -97,8 +99,24 @@ class Attendance(models.Model):
     clock_in_time = models.DateTimeField(null=True, blank=True)
     clock_out_time = models.DateTimeField(null=True, blank=True)
 
+    @property
+    def status(self):
+        if self.clock_in_time and self.clock_out_time:
+            return 'Present'
+        elif self.clock_in_time and not self.clock_out_time:
+            return 'Still Present'
+        else:
+            return 'Absent'
+
+    @property
+    def total_hours(self):
+        if self.clock_in_time and self.clock_out_time:
+            time_diff = self.clock_out_time - self.clock_in_time
+            return time_diff.total_seconds() / 3600  # convert to hours
+        return 0
+    
     def __str__(self):
-        return f"{self.user.username} - {self.date}"
+        return f"{self.user.username} - {self.date} - {self.status} "
 
 
 class Deadline(models.Model):
@@ -110,3 +128,31 @@ class Deadline(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class Employee(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.username
+    
+#Physiacl meetings model
+class PhysMeeting(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=200)
+    #meeting_link = models.URLField(max_length=200)
+    date = models.DateField()
+    time = models.TimeField()
+    description = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.title} by {self.user.username} on {self.date} at {self.time}"
+
+class TotalHoursWorked(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    month = models.DateField()
+    total_hours = models.DecimalField(max_digits=6, decimal_places=2)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.month.strftime('%B %Y')} - {self.total_hours} hours"

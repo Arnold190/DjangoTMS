@@ -1,5 +1,5 @@
 from django.shortcuts import render
-
+from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -9,9 +9,10 @@ from .forms import TaskForm, UploadForm, DeadlineForm
 from .models import Task, Uploads, Deadline
 
 
+@login_required
 def dashboard(request):
     # Logic for the dashboard view
-    return render(request, 'dashboard.html') 
+    return render(request, 'userdashboard.html') 
 
 
 @login_required
@@ -79,3 +80,10 @@ def create_deadline(request):
 def deadline_list(request):
     deadlines = Deadline.objects.all()
     return render(request, 'deadline_list.html', {'deadlines': deadlines})
+
+
+@login_required
+def total_employees(request):
+    total = User.objects.count()
+    context = {'total': total}
+    return render(request, 'total_employees.html', context)
