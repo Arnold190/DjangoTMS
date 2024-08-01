@@ -4,22 +4,72 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Attendance, Meetings
-
+from django.contrib import messages
 from .forms import TaskForm, UploadForm, DeadlineForm
 from .models import Task, Uploads, Deadline
+from django.contrib.auth import authenticate, login
+from .forms import CustomLoginForm
+from django.contrib.auth.views import LoginView
+from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_protect
 
+class CustomLoginView(LoginView):
+    template_name = 'Checkpoint/login.html'  # Replace with your actual template path
+
+    def get_success_url(self):
+        return self.get_redirect_url() or reverse_lazy('dashboard')  
+    
 
 @login_required
 def dashboard(request):
-    # Logic for the dashboard view
-    return render(request, 'userdashboard.html') 
+    context = {
+        'username': request.user.username,
+        
+    }
+    return render(request, 'Checkpoint/userdashboard.html', context)
+
+
+#@login_required
+#def dashboard(request):
+ #context = {
+      #  'username': request.user.username,
+    #}
+
+    #return render(request, 'Checkpoint/userdashboard.html') 
+
+
+#def LoginView(request):
+  # return render(request, 'Checkpoint/login.html')
+
+@csrf_protect
+def LoginView(request):
+    if request.method == 'POST':
+        form = CustomLoginForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('dashboard')  # Redirect to a success page.
+            else:
+                messages.error(request, 'Invalid username or password.')
+        else:
+            messages.error(request, 'Invalid username or password.')
+    else:
+        form = CustomLoginForm()
+    return render(request, 'Checkpoint/login.html', {'login': form})
+
+
+##########
+
 
 
 @login_required
 def clock_in(request):
     user = request.user
     today = timezone.now().date()
-    attendance, created = Attendance.objects.get_or_create(user=user, date=today)
+    attendance, created = Attendance.objects.get_or_create(user=user, work_date=today)
     if not attendance.clock_in_time:
         attendance.clock_in_time = timezone.now()
         attendance.save()
@@ -29,7 +79,7 @@ def clock_in(request):
 def clock_out(request):
     user = request.user
     today = timezone.now().date()
-    attendance = Attendance.objects.filter(user=user, date=today).first()
+    attendance = Attendance.objects.filter(user=user, work_date=today).first()
     if attendance and not attendance.clock_out_time:
         attendance.clock_out_time = timezone.now()
         attendance.save()
@@ -39,7 +89,7 @@ def clock_out(request):
 def attendance_status(request):
     user = request.user
     today = timezone.now().date()
-    attendance = Attendance.objects.filter(user=user, date=today).first()
+    attendance = Attendance.objects.filter(user=user, work_date=today).first()
     return render(request, 'attendance_status.html', {'attendance': attendance})
 
 def meeting_links(request):

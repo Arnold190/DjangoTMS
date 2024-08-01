@@ -12,10 +12,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -39,7 +40,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'App',
-    'Checkpoint'
+    'Checkpoint',
+
+    'sass_processor',
+    'compressor',
+
+    'django.contrib.sites',  # Required by allauth
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
 
 MIDDLEWARE = [
@@ -50,6 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'PROD.urls'
@@ -124,6 +134,42 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+# Directory where collected static files will be stored
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles'),
+
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
+
+STATICFILES_FINDERS = [
+    'compressor.finders.CompressorFinder', ]
+
+COMPRESS_ENABLED = True
+
+ #COMPRESS
+
+COMPRESS_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Incorrect: Tuple assigned to COMPRESS_ROOT
+COMPRESS_ROOT = (os.path.join(BASE_DIR, 'staticfiles'),)
+
+#COMPRESS_ENABLED = True
+#COMPRESS_OFFLINE = True
+#COMPRESS_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+#COMPRESS_URL = STATIC_URL
+#COMPRESS_ROOT = STATIC_ROOT
+
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
+COMPRESS_ROOT = os.path.join(BASE_DIR, 'static')
+COMPRESS_URL = '/static/'
+
+
+#SASS
+SASS_PROCESSOR_ENABLED = True
+SASS_PROCESSOR_ROOT = STATICFILES_DIRS[0]  # Adjust as needed
+
+
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
@@ -132,3 +178,17 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+#Allauth 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',  # Keep the default authentication backend
+    'allauth.account.auth_backends.AuthenticationBackend',  # Add allauth backend
+)
+
+SITE_ID = 1
+
+# Additional settings for allauth
+LOGIN_REDIRECT_URL = '/dashboard/'  # Or wherever you want to redirect after login
+
+

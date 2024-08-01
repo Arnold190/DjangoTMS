@@ -22,8 +22,8 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('App.urls')),
-    path('accounts/', include('Checkpoint.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
+    path('', include('Checkpoint.urls')),
     #path('dashboard/', include('Checkpoint.urls'))
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

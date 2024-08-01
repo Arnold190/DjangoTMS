@@ -29,8 +29,8 @@ class EmployeeAdmin(admin.ModelAdmin):
 
 @admin.register(PhysMeeting)
 class MeetingAdmin(admin.ModelAdmin):
-    list_display = ('title', 'user', 'date', 'time', 'created_at')
-    list_filter = ('date', 'user')
+    list_display = ('title', 'user', 'work_date', 'time', 'created_at')
+    list_filter = ('work_date', 'user')
     search_fields = ('title', 'user__username')
 
 

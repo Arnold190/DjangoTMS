@@ -2,6 +2,13 @@
 
 from django import forms
 from .models import Task, Uploads, Deadline, PhysMeeting
+from django.contrib.auth.forms import AuthenticationForm
+
+
+class CustomLoginForm(AuthenticationForm):
+    username = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'username'}))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'password'}))
+
 
 class UploadForm(forms.ModelForm):
     class Meta:
@@ -23,4 +30,4 @@ class DeadlineForm(forms.ModelForm):
 class PhysMeetingForm(forms.ModelForm):
     class Meta:
         model = PhysMeeting
-        fields = ['title', 'date', 'time', 'description']
+        fields = ['title', 'work_date', 'time', 'description']
