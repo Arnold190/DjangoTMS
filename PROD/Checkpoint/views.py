@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from .models import Attendance, Meetings
 from django.contrib import messages
-from .forms import TaskForm, UploadForm, DeadlineForm
+from .forms import TaskForm, UploadForm, DeadlineForm, PhysMeetingForm
 from .models import Task, Uploads, Deadline
 from django.contrib.auth import authenticate, login
 from .forms import CustomLoginForm
@@ -125,20 +125,50 @@ def create_task(request):
 @login_required
 def create_deadline(request):
     if request.method == 'POST':
-        form = DeadlineForm(request.POST)
-        if form.is_valid():
-            deadline = form.save(commit=False)
+        deadline_form = DeadlineForm(request.POST)
+        if deadline_form.is_valid():
+            deadline = deadline_form.save(commit=False)
             deadline.created_by = request.user
             deadline.save()
-            return redirect('deadline_list')  # Change this to the name of your deadline list view
+            return redirect('Checkpoint/deadlines.html')  # Change this to the name of your deadline list view
     else:
-        form = DeadlineForm()
-    return render(request, 'create_deadline.html', {'form': form})
+        deadline_form = DeadlineForm()
+    return render(request, 'Checkpoint/deadlines.html', {'deadline_form': deadline_form})
+
+
+@login_required
+def meetups(request):
+    if request.method == 'POST':
+        meetup_form = PhysMeetingForm(request.POST)
+        if meetup_form.is_valid():
+            meetup = meetup_form.save(commit=False)
+            meetup.created_by = request.user
+            meetup.save()
+            return redirect('Checkpoint/meetups.html')
+    else:
+        meetup_form = PhysMeetingForm()
+    return render(request, 'Checkpoint/meetups.html', {'meetup_form': meetup_form})
+
+@login_required
+def uploads(request):
+    if request.method == 'POST':
+        uploads_form = UploadForm(request.POST)
+        if uploads_form.is_valid():
+            upload = uploads_form.save(commit=False)
+            upload.created_by = request.user 
+            upload.save()
+            return redirect('Checkpoint/uploads.html')
+        
+    else:
+        uploads_form = UploadForm()
+    return render(request, 'Checkpoint/uploads.html', {'uploads_form': uploads_form})
+
+
 
 @login_required
 def deadline_list(request):
     deadlines = Deadline.objects.all()
-    return render(request, 'deadline_list.html', {'deadlines': deadlines})
+    return render(request, 'Checkpoint/deadlines.html', {'deadlines': deadlines})
 
 
 @login_required

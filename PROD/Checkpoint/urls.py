@@ -13,6 +13,8 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('dashboard/', dashboard, name='dashboard' ),
     path('tasks/', views.create_task, name='create_task' ),
+    path('meetups/', views.meetups, name='meetups'),
+    path('uploads/', views.uploads, name='uploads'),
     #path('clock-in/', clock_in, name='clock_in'),
     #path('clock-out/', clock_out, name='clock_out'),
     path('attendance-status/', views.attendance_status, name='attendance_status'),
