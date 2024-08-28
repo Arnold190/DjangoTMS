@@ -92,25 +92,34 @@ def attendance_status(request):
     attendance = Attendance.objects.filter(user=user, work_date=today).first()
     return render(request, 'attendance_status.html', {'attendance': attendance})
 
+@login_required
 def meeting_links(request):
     meetings = Meetings.objects.all()
     return render(request, 'meetings.html', {'meetings': meetings})
 
-
+@login_required
 def create_task(request):
     if request.method == 'POST':
         task_form = TaskForm(request.POST)
         upload_form = UploadForm(request.POST, request.FILES)
-        if task_form.is_valid() and upload_form.is_valid():
-            upload = upload_form.save()
+
+        if task_form.is_valid():
             task = task_form.save(commit=False)
-            task.uploads = upload
+            task.user = request.user
+
+            # Check if a file was uploaded
+            if upload_form.is_valid() and request.FILES.get('file'):  # 'file' should match the field name in UploadForm
+                upload = upload_form.save()
+                task.uploads = upload
+
             task.save()
-            return redirect('task_list')  # Redirect to a task list or another page
+            return redirect('Checkpoint/tasks.html')  # Redirect to a task list or another page
+
     else:
         task_form = TaskForm()
         upload_form = UploadForm()
-    return render(request, 'create_task.html', {'task_form': task_form, 'upload_form': upload_form})
+
+    return render(request, 'Checkpoint/tasks.html', {'task_form': task_form, 'upload_form': upload_form})
 
 
 @login_required

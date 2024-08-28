@@ -44,6 +44,7 @@ INSTALLED_APPS = [
 
     'sass_processor',
     'compressor',
+    'widget_tweaks',
 
     'django.contrib.sites',  # Required by allauth
     'allauth',
