@@ -12,13 +12,32 @@ from .forms import CustomLoginForm
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_protect
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_protect
 
+
+
+@method_decorator(csrf_protect, name='dispatch')
 class CustomLoginView(LoginView):
     template_name = 'Checkpoint/login.html'  # Replace with your actual template path
+    form_class = CustomLoginForm 
 
     def get_success_url(self):
         return self.get_redirect_url() or reverse_lazy('dashboard')  
     
+    def form_valid(self, form):
+        # Override to use email instead of username
+        email = form.cleaned_data.get('username')
+        password = form.cleaned_data.get('password')
+        user = authenticate(self.request, username=email, password=password)
+        if user is not None:
+            login(self.request, user)
+            return super().form_valid(form)
+        else:
+            form.add_error(None, 'Invalid email or password')
+            return self.form_invalid(form)
+
+
 
 @login_required
 def dashboard(request):
@@ -41,24 +60,25 @@ def dashboard(request):
 #def LoginView(request):
   # return render(request, 'Checkpoint/login.html')
 
-@csrf_protect
-def LoginView(request):
-    if request.method == 'POST':
-        form = CustomLoginForm(request, data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return redirect('dashboard')  # Redirect to a success page.
-            else:
-                messages.error(request, 'Invalid username or password.')
-        else:
-            messages.error(request, 'Invalid username or password.')
-    else:
-        form = CustomLoginForm()
-    return render(request, 'Checkpoint/login.html', {'login': form})
+#@csrf_protect
+#def LoginView(request):
+#    if request.method == 'POST':
+#        form = CustomLoginForm(request.POST)
+#        if form.is_valid():
+#            email = form.cleaned_data.get('email')
+#            password = form.cleaned_data.get('password')
+#            user = authenticate(request, username=email, password=password)  # Authenticate by email
+#            if user is not None:
+#                login(request, user)
+#                return redirect('dashboard')  # Redirect to a success page or dashboard
+#            else:
+#                messages.error(request, 'Invalid email or password.')
+#        else:
+#            messages.error(request, 'Invalid form submission.')
+#    else:
+#        form = CustomLoginForm()
+
+#    return render(request, 'Checkpoint/login.html', {'form': form})
 
 
 ##########

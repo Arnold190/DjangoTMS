@@ -3,20 +3,29 @@
 from django import forms
 from .models import Task, Uploads, Deadline, PhysMeeting
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth import authenticate
+from django.conf import settings
+
 
 
 class CustomLoginForm(AuthenticationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={
+    username = forms.EmailField(widget=forms.EmailInput(attrs={
+        'id': 'email',
         'class': 'form-control form-input dark:bg-zink-600/50 border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200', 
-        'placeholder': 'username'
-
-        
-        }))
+        'placeholder': 'Enter Email'
+    }))
+    
     password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'id': 'password',
         'class': 'form-control form-input dark:bg-zink-600/50 border-slate-200 dark:border-zink-500 focus:outline-none focus:border-custom-500 disabled:bg-slate-100 dark:disabled:bg-zink-600 disabled:border-slate-300 dark:disabled:border-zink-500 dark:disabled:text-zink-200 disabled:text-slate-500 dark:text-zink-100 dark:focus:border-custom-800 placeholder:text-slate-400 dark:placeholder:text-zink-200', 
-        'placeholder': 'password'
-        
-        }))
+        'placeholder': 'Enter Password'
+    }))
+
+    def clean_username(self):
+        email = self.cleaned_data.get('username')
+        return email
+
+
 
 
 class UploadForm(forms.ModelForm):

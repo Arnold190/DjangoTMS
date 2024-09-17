@@ -29,10 +29,19 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Custom user model
+#AUTH_USER_MODEL = 'Checkpoint.CustomUser'
 
 # Application definition
 
 INSTALLED_APPS = [
+    
+    'frontend', #custom tailwind theme app
+    'tailwind',
+
+    #'frontend', #custom tailwind theme app
+    
+   'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -52,9 +61,20 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
 ]
 
+TAILWIND_APP_NAME = 'frontend'
+NPM_BIN_PATH = 'F:\\nodejs\\npm.cmd'
+
+# NPM_BIN_PATH = '/f/nodejs/npm'
+
+  #"/path/to/npm"
+
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -133,13 +153,32 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+#STATIC_URL = 'static/'
+#STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+#STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 # Directory where collected static files will be stored
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles'),
+#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+#STATICFILES_STORAGE = 'Checkpoint.storage.CustomStaticStorage'
+#STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+BASE_DIR = Path(__file__).resolve().parent.parent
 
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [BASE_DIR / 'static']
+
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+####
 
 STATICFILES_FINDERS = [
     'compressor.finders.CompressorFinder', ]
@@ -177,14 +216,23 @@ SASS_PROCESSOR_ROOT = STATICFILES_DIRS[0]  # Adjust as needed
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+#MEDIA_URL = '/media/'
+#MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+MEDIA_ROOT = '/path/to/media/root'
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
+# settings.py
+DEFAULT_FILE_STORAGE = 'Checkpoint.storage.CustomStorage'
 
 
 #Allauth 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',  # Keep the default authentication backend
     'allauth.account.auth_backends.AuthenticationBackend',  # Add allauth backend
+    'Checkpoint.backends.EmailBackend'
+    
 )
 
 SITE_ID = 1
@@ -192,4 +240,5 @@ SITE_ID = 1
 # Additional settings for allauth
 LOGIN_REDIRECT_URL = '/dashboard/'  # Or wherever you want to redirect after login
 
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 

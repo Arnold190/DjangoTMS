@@ -4,7 +4,7 @@ from django.urls import path, include
 from .views import clock_in, clock_out, attendance_status, dashboard, create_deadline, deadline_list
 from django.contrib.auth import views as auth_views 
 from . import views
-from .views import CustomLoginView
+from Checkpoint.views import CustomLoginView
 
 
 urlpatterns = [

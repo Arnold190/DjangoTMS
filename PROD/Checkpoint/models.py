@@ -1,9 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User 
+#from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin 
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 import uuid
 from datetime import timedelta
+from django.conf import settings
 
 # Create your models here.
 
@@ -25,14 +27,24 @@ class UserProfile(models.Model):
         super(UserProfile, self).save(*args, **kwargs)
 
 
-     def _str_(self):
+     def __str__(self):
         return self.user.username
 
 
 
 class CustomLoginForm(AuthenticationForm):
-    username = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'placeholder': 'username'}))
-    password = forms.CharField(widget=forms.TextInput(attrs={'class':'form-control', 'placeholder': 'password'}))
+    username = forms.EmailField(widget=forms.TextInput(attrs={
+        'class': 'form-control', 
+        'placeholder': 'Enter your Email'
+    }))
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        'class': 'form-control', 
+        'placeholder': 'Enter your Password'
+    }))
+
+    def clean_username(self):
+        email = self.cleaned_data.get('username')
+        return email
 
 
 
