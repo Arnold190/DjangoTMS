@@ -41,7 +41,7 @@ INSTALLED_APPS = [
 
     #'frontend', #custom tailwind theme app
     
-   'jazzmin',
+    "unfold",  # before django.contrib.admin
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -149,6 +149,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+USE_L10N = True
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
@@ -190,7 +192,7 @@ COMPRESS_ENABLED = True
 COMPRESS_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Incorrect: Tuple assigned to COMPRESS_ROOT
-COMPRESS_ROOT = (os.path.join(BASE_DIR, 'staticfiles'),)
+#COMPRESS_ROOT = (os.path.join(BASE_DIR, 'staticfiles'),)
 
 #COMPRESS_ENABLED = True
 #COMPRESS_OFFLINE = True
