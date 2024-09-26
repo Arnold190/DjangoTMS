@@ -5,8 +5,5 @@ class CheckpointConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'Checkpoint'
 
-class CheckpointConfig(AppConfig):
-    name = 'Checkpoint'
-
     def ready(self):
         import Checkpoint.signals

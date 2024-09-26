@@ -13,6 +13,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 import environ
+from django.templatetags.static import static
+from django.urls import reverse_lazy
+from django.utils.translation import gettext_lazy as _
+from Checkpoint.callbacks import permission_callback
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -38,10 +43,10 @@ INSTALLED_APPS = [
     
     'frontend', #custom tailwind theme app
     'tailwind',
-
+    'django_extensions',
     #'frontend', #custom tailwind theme app
     
-    "unfold",  # before django.contrib.admin
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -243,4 +248,3 @@ SITE_ID = 1
 LOGIN_REDIRECT_URL = '/dashboard/'  # Or wherever you want to redirect after login
 
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
-

@@ -31,7 +31,6 @@ class UserProfile(models.Model):
         return self.user.username
 
 
-
 class CustomLoginForm(AuthenticationForm):
     username = forms.EmailField(widget=forms.TextInput(attrs={
         'class': 'form-control', 
@@ -45,7 +44,6 @@ class CustomLoginForm(AuthenticationForm):
     def clean_username(self):
         email = self.cleaned_data.get('username')
         return email
-
 
 
 class Task(models.Model):
@@ -64,9 +62,9 @@ class Task(models.Model):
     description = models.TextField()
     created_at  = models.DateTimeField(auto_now_add=True)
     uploads = models.FileField(upload_to='uploads/', blank=True, null=True)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"Task: {self.task} | Due: {self.due_date.strftime('%Y-%m-%d %H:%M')} | Status: {self.status} | Assigned to: {self.user.username}"
-
 
 
 class TaskStats(models.Model):
@@ -81,7 +79,6 @@ class TaskStats(models.Model):
         return f"Stats for {self.user.username} - {self.year}/{self.month}"
 
 
-
 class Uploads(models.Model):
     name = models.CharField(max_length=20)
     file = models.FileField(upload_to='uploads/', null=True, blank=True)
@@ -91,7 +88,6 @@ class Uploads(models.Model):
 
     def __str__(self):
         return self.file.name
-
 
 
 class Meetings(models.Model):
@@ -110,7 +106,6 @@ class Attendance(models.Model):
     work_date = models.DateTimeField(auto_now_add=True)
     clock_in_time = models.DateTimeField(null=True, blank=True)
     clock_out_time = models.DateTimeField(null=True, blank=True)
-    total_hours = models.FloatField(default=0.0)
 
     @property
     def status(self):
@@ -127,9 +122,10 @@ class Attendance(models.Model):
             time_diff = self.clock_out_time - self.clock_in_time
             return time_diff.total_seconds() / 3600  # convert to hours
         return 0
-    
+
     def __str__(self):
-        return f"{self.user.username} - {self.work_date} - {self.status} "
+        return f"{self.user.username} - {self.work_date} - {self.status}"
+
 
 
 class Deadline(models.Model):

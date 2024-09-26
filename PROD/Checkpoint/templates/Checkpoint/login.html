@@ -53,11 +53,13 @@
 
         <div class="form-container sign-in">
             <form method="post" action="{% url 'login' %}">
+
                 {% csrf_token %}
 
                 <h1>Sign In</h1>
                
                 <!----
+                <form method="post" action="{% url 'login' %}">
                 <div class="social-icons">
                     <a href="#" class="icon"><i class="fa-brands fa-google"></i></a>
                     <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
