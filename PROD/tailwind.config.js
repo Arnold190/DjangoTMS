@@ -8,6 +8,9 @@ module.exports = {
   ],
   theme: {
     extend: {},
+    spacing: {
+      'vertical-menu-sm': '2rem', // Adjust as needed
+    },
   },
   plugins: [],
 }

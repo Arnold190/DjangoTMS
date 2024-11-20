@@ -62,7 +62,7 @@ class Task(models.Model):
     description = models.TextField()
     created_at  = models.DateTimeField(auto_now_add=True)
     uploads = models.FileField(upload_to='uploads/', blank=True, null=True)
-    uploaded_at = models.DateTimeField(auto_now_add=True)
+    #uploaded_at = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return f"Task: {self.task} | Due: {self.due_date.strftime('%Y-%m-%d %H:%M')} | Status: {self.status} | Assigned to: {self.user.username}"
 
@@ -86,12 +86,22 @@ class Uploads(models.Model):
     uploaded_at = models.DateTimeField(auto_now_add=True)
     
 
+
     def __str__(self):
         return self.file.name
 
 
+
+#Virtual Meeting Model
 class Meetings(models.Model):
+    STATUS1_CHOICES = [
+     ('On-Going', 'On-Going'),
+     ('Done', 'Done'),
+
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    status1 = models.CharField(max_length=20, choices=STATUS1_CHOICES)
     title = models.CharField(max_length=255)
     link = models.URLField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -168,6 +178,8 @@ class PhysMeeting(models.Model):
     def __str__(self):
         return f"{self.title} by {self.user.username} on {self.work_date} at {self.time}"
 
+
+#Hours WOrked Model
 class TotalHoursWorked(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     month = models.DateField()
@@ -176,3 +188,20 @@ class TotalHoursWorked(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.month.strftime('%B %Y')} - {self.total_hours} hours"
+
+##Event Model to be implemented later
+class Event(models.Model):
+    title = models.CharField(max_length=255)
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    description = models.TextField(null=True, blank=True)
+    category = models.CharField(max_length=10, choices=[
+        ('primary', 'Primary'),
+        ('success', 'Success'),
+        ('info', 'Info'),
+        ('warning', 'Warning'),
+        ('purple', 'Purple'),
+    ])
+
+    def __str__(self):
+        return self.title
