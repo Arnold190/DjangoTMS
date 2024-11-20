@@ -40,7 +40,7 @@ class UploadsAdmin(admin.ModelAdmin):
 
 @admin.register(Meetings)
 class MeetingsAdmin(admin.ModelAdmin):
-    list_display = ('title', 'user', 'created_at')
+    list_display = ('title', 'user', 'created_at', 'status1')
 #admin.site.register(Attendance)
 
 @admin.register(TaskStats)

@@ -23,9 +23,11 @@ from django.conf.urls.i18n import i18n_patterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('django.contrib.auth.urls')),
-    path('', include('Checkpoint.urls')),
-    #path('dashboard/', include('Checkpoint.urls'))
+    path('accounts/', include('Checkpoint.urls')),
+    #path('accounts/', include('django.contrib.auth.urls')),
+    #path('accounts/', include('allauth.urls')), 
+    #path('', include('allauth.urls')),
+    #path('', include('Checkpoint.urls'))
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
